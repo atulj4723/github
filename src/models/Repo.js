@@ -19,7 +19,7 @@ const RepoSchema = new Schema({
         type: Object,
         default: [],
     },
-    structure: {
+    systemPrompt: {
         type: String,
     },
 });

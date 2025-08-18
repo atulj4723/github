@@ -1,7 +1,8 @@
 import dbConnect from "@/lib/dbConnet";
 import { octokit } from "@/lib/githubConfig";
 import { RepoModel } from "@/models/Repo";
-
+import axios from "axios";
+import fs from "fs";
 function getMediaType(filename) {
     const ext = filename.toLowerCase();
     if ([".mp3", ".wav", ".flac"].some((e) => ext.endsWith(e))) return "audio";
@@ -85,7 +86,7 @@ export async function POST(request) {
         });
 
         const res = await RepoModel.findOne({ owner, repo });
-
+       // fs.writeFileSync("tree.json", JSON.stringify(res));
         if (
             new Date(res?.lastModified).getTime() ===
             new Date(headers["last-modified"]).getTime()
@@ -111,7 +112,13 @@ export async function POST(request) {
             },
             { upsert: true, new: true }
         );
-
+        const genSysInst = await axios.post(
+            "http://localhost:3000/api/repo-summary",
+            {
+                owner,
+                repo,
+            }
+        );
         return Response.json(
             {
                 success: true,
