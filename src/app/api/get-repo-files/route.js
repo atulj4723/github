@@ -86,7 +86,6 @@ export async function POST(request) {
         });
 
         const res = await RepoModel.findOne({ owner, repo });
-       // fs.writeFileSync("tree.json", JSON.stringify(res));
         if (
             new Date(res?.lastModified).getTime() ===
             new Date(headers["last-modified"]).getTime()

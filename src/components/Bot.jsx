@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { marked } from "marked";
 import React, { useState, useRef, useEffect } from "react";
 
 const Bot = ({ owner, repo, openFile, changeFile }) => {
@@ -51,7 +52,7 @@ const Bot = ({ owner, repo, openFile, changeFile }) => {
     return (
         <div className="fixed bottom-6 right-6 z-50">
             <button
-                className="text-3xl bg-blue-600 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-transform"
+                className="text-2xl bg-blue-600 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-transform"
                 onClick={() => setOpenChat(!openChat)}>
                 {openChat ? "❌" : "🤖"}
             </button>
@@ -64,18 +65,25 @@ const Bot = ({ owner, repo, openFile, changeFile }) => {
                         ref={chatContainerRef}
                         className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50">
                         {chat.map((cur, idx) =>
-                            cur.role === "user" ? (
-                                <div
-                                    key={idx}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-2xl max-w-[80%] ml-auto shadow">
-                                    {cur.parts[0].text}
-                                </div>
+                            cur.parts[0].text ? (
+                                cur.role === "user" ? (
+                                    <div
+                                        key={idx}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded-2xl max-w-[80%] w-fit ml-auto shadow">
+                                        {cur.parts[0].text}
+                                    </div>
+                                ) : (
+                                    <div
+                                        key={idx}
+                                        dangerouslySetInnerHTML={{
+                                            __html: marked.parse(
+                                                cur.parts[0].text
+                                            ),
+                                        }}
+                                        className="bg-gray-200 text-black px-4 py-2 rounded-2xl max-w-[80%] shadow"></div>
+                                )
                             ) : (
-                                <div
-                                    key={idx}
-                                    className="bg-gray-200 text-black px-4 py-2 rounded-2xl max-w-[80%] shadow">
-                                    {cur.parts[0].text}
-                                </div>
+                                <></>
                             )
                         )}
                     </div>

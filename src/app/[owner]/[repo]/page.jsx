@@ -113,6 +113,16 @@ const Page = () => {
                 src={openFile?.download_url}
                 className="h-full w-full object-contain m-auto rounded-lg"
             />
+        ) : openFile?.media === "video" ? (
+            <video
+                src={openFile?.download_url}
+                controls
+                className="h-full w-full object-contain m-auto rounded-lg"
+            />
+        ) : openFile?.media === "audio" ? (
+            <div className="w-full h-full flex justify-center items-center">
+                <audio src={openFile?.download_url} controls className="" />
+            </div>
         ) : (
             <></>
         );
@@ -125,7 +135,7 @@ const Page = () => {
                 {dirShow(files)}
             </div>
             <div className="h-full w-[80%] flex flex-col">
-                <div className="h-[7%] bg-gray-800 text-white flex items-center overflow-auto border-b border-gray-700">
+                <div className="h-[7%] bg-gray-800 text-white flex items-center overflow-scroll border-b border-gray-700">
                     {openFiles.map((cur) => {
                         return (
                             <div

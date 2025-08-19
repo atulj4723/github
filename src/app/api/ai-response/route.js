@@ -3,13 +3,13 @@ import axios from "axios";
 
 export async function POST(request) {
     let { conversation, owner, repo, openFile = "" } = await request.json();
-    const state = { openFile }; // wrapper object ✅
+    const state = { openFile }; 
 
     const toolFunctions = {
         getFileContent: async ({ owner, repo, filePath }) => {
             const res = await axios.get(
                 "http://localhost:3000/api/get-repo-file",
-                { params: { owner, repo,path: filePath } }
+                { params: { owner, repo, path: filePath } }
             );
             return res.data.data;
         },
@@ -17,8 +17,7 @@ export async function POST(request) {
             return state.openFile;
         },
         changeCurrentOpenFile: async ({ newFile }) => {
-            console.log("change:", newFile);
-            state.openFile = newFile; // ✅ persist inside wrapper
+            state.openFile = newFile;
             return state.openFile;
         },
     };
@@ -88,7 +87,11 @@ export async function POST(request) {
                 role: "user",
                 parts: [{ functionResponse: { name, response: { result } } }],
             });
-            return await processRes(conversation, systemInstruction, retries + 1);
+            return await processRes(
+                conversation,
+                systemInstruction,
+                retries + 1
+            );
         } else {
             const text = res.candidates[0]?.content?.parts?.[0]?.text;
             conversation.push({ role: "model", parts: [{ text }] });
@@ -113,10 +116,16 @@ Use changeCurrentOpenFile function to open the file in side panel.Do not add / i
 Use the folder structure to locate files before answering.
 Keep responses professional, structured, and developer-focused.
 give simple short answers.do not give long answers.
+When answering user questions:
+- Generate polite, natural, and helpful responses.
+- Use the information above to create concise, friendly answers.
+- Add *clear spacing* between sections so its easy to read.
+- Use *matching emojis* for sections to improve visual appeal.
+- Format answers with Markdown, including headings, bullet points, and emojis.
+- Do NOT invent information beyond what is provided.
 `;
     try {
         const res = await processRes(conversation, systemInstruction, 0);
-        console.log("FINAL openFile:", state.openFile); // ✅ now updated
         return Response.json(
             { success: true, message: res, openFile: state.openFile },
             { status: 200 }

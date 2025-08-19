@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnet";
 import { RepoModel } from "@/models/Repo";
-//import fs from "fs";
+
 function findFile(files, targetPath) {
     if (!files) return null;
 
@@ -72,8 +72,4 @@ export async function GET(request) {
         );
     }
 }
-// const data = fs.readFileSync("tree.json", "utf-8");
-// //console.log(JSON.parse(data));
-// const tree=JSON.parse(data)
-// const file = findFile(tree.files, "tools/AITools/runSearch.js");
-// console.log(file);
+

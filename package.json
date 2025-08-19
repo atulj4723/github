@@ -2,7 +2,7 @@
   "name": "github",
   "version": "0.1.0",
   "private": true,
-  "type":"module",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -13,6 +13,7 @@
     "@google/genai": "^1.14.0",
     "axios": "^1.11.0",
     "dotenv": "^17.2.1",
+    "marked": "^16.2.0",
     "mongoose": "^8.17.1",
     "next": "15.4.6",
     "octokit": "^5.0.3",
