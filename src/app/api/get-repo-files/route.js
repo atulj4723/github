@@ -26,7 +26,6 @@ const fetchData = async (owner, repo, path) => {
     const { data, headers } = response;
 
     let lastModified = headers["last-modified"] || new Date();
-    console.log(path);
     if (!Array.isArray(data)) {
         const type = getMediaType(data.name);
         if (type === "other" || type === "text") {

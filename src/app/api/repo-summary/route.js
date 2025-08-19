@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/dbConnet";
 import { ai } from "@/lib/geminiConfig";
 import { RepoModel } from "@/models/Repo";
 import { Type } from "@google/genai";
@@ -5,6 +6,7 @@ import axios from "axios";
 
 export async function POST(request) {
     try {
+        await dbConnect();
         const { owner, repo } = await request.json();
 
         const repository = await RepoModel.findOne({ owner, repo });
@@ -67,7 +69,6 @@ Do not include any explanation or extra text — just return a valid JSON array 
             return files
                 .map((file) => {
                     if (file.type === "dir") {
-                        
                         if (exclude.includes(file.name)) return null;
 
                         const filteredChildren = summarizeFiles(

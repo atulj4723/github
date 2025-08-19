@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function POST(request) {
     let { conversation, owner, repo, openFile = "" } = await request.json();
-    const state = { openFile }; 
+    const state = { openFile };
 
     const toolFunctions = {
         getFileContent: async ({ owner, repo, filePath }) => {
@@ -23,7 +23,6 @@ export async function POST(request) {
     };
 
     const processRes = async (conversation, systemInstruction, retries) => {
-        console.log(JSON.stringify(conversation));
         const res = await ai.models.generateContent({
             model: "gemini-2.0-flash",
             contents: conversation,
@@ -103,11 +102,16 @@ export async function POST(request) {
         "http://localhost:3000/api/repo-summary",
         { owner, repo }
     );
+    const structure = await axios.post(
+        "http://localhost:3000/api/generate-repo-structure",
+        { owner, repo }
+    );
     const systemInstruction = `
 You are an AI Coding Assistant specialized in the following GitHub repository:
 owner=${owner}
 repo=${repo}
 summary=${data.data}
+fileStrucure=${structure.data.message}
 UI / Interaction Instructions
 Never dump raw file content in chat.
 While explaining any file strictly open that file in side panel.
@@ -123,6 +127,8 @@ When answering user questions:
 - Use *matching emojis* for sections to improve visual appeal.
 - Format answers with Markdown, including headings, bullet points, and emojis.
 - Do NOT invent information beyond what is provided.
+- Only give answer related to repository or codebase.
+- why this file used or use of current file then use getCurrentFile function and give answers accordingly.
 `;
     try {
         const res = await processRes(conversation, systemInstruction, 0);

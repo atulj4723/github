@@ -3,18 +3,15 @@ import { RepoModel } from "@/models/Repo";
 
 function findFile(files, targetPath) {
     if (!files) return null;
-
-    if (files.type === "file" && files.path === targetPath) {
-        return files;
-    }
-
     if (files.type === "dir" && Array.isArray(files.files)) {
         for (const child of files.files) {
             const result = findFile(child, targetPath);
             if (result) return result;
         }
     }
-
+    if (files.path === targetPath) {
+        return files;
+    }
     return null;
 }
 
@@ -25,7 +22,6 @@ export async function GET(request) {
         const owner = searchParams.get("owner");
         const repo = searchParams.get("repo");
         const filePath = searchParams.get("path");
-        console.log(filePath);
         if (!owner || !repo || !filePath) {
             return Response.json(
                 {
@@ -72,4 +68,3 @@ export async function GET(request) {
         );
     }
 }
-
