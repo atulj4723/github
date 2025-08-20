@@ -112,7 +112,7 @@ const Page = () => {
             return a.name.localeCompare(b.name);
         });
         return dir.map((cur) => {
-            const isExpanded = expandedDirs.includes(cur.name);
+            const isExpanded = expandedDirs.includes(cur.path);
             const icon =
                 cur.type === "dir"
                     ? isExpanded
@@ -125,7 +125,7 @@ const Page = () => {
                 return (
                     <div key={cur.path} className="text-sm">
                         <div
-                            onClick={() => toggleDir(cur.name)}
+                            onClick={() => toggleDir(cur.path)}
                             style={{ paddingLeft: `${prefix * 8}px` }}
                             className="flex items-center gap-2 py-1.5 text-gray-400 hover:text-white hover:bg-gray-800 cursor-pointer transition-colors rounded-md">
                             <span>{icon}</span>
