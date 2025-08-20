@@ -106,6 +106,11 @@ const Page = () => {
     };
 
     const dirShow = (dir, prefix = 0) => {
+        dir.sort((a, b) => {
+            if (a.type === "dir" && b.type !== "dir") return -1;
+            if (a.type !== "dir" && b.type === "dir") return 1;
+            return a.name.localeCompare(b.name);
+        });
         return dir.map((cur) => {
             const isExpanded = expandedDirs.includes(cur.name);
             const icon =
