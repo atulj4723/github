@@ -8,7 +8,7 @@ export async function POST(request) {
     const toolFunctions = {
         getFileContent: async ({ owner, repo, filePath }) => {
             const res = await axios.get(
-                "http://localhost:3000/api/get-repo-file",
+                `${process.env.BASE_URL}/api/get-repo-file`,
                 { params: { owner, repo, path: filePath } }
             );
             return res.data.data;
@@ -99,11 +99,11 @@ export async function POST(request) {
     };
 
     const { data } = await axios.post(
-        "http://localhost:3000/api/repo-summary",
+        `${process.env.BASE_URL}/api/repo-summary`,
         { owner, repo }
     );
     const structure = await axios.post(
-        "http://localhost:3000/api/generate-repo-structure",
+        `${process.env.BASE_URL}/api/generate-repo-structure`,
         { owner, repo }
     );
     const systemInstruction = `

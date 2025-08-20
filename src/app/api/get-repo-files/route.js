@@ -111,7 +111,7 @@ export async function POST(request) {
             { upsert: true, new: true }
         );
         const genSysInst = await axios.post(
-            "http://localhost:3000/api/repo-summary",
+            `${process.env.BASE_URL}/api/repo-summary`,
             {
                 owner,
                 repo,

@@ -21,7 +21,7 @@ export async function POST(request) {
             );
         }
         const repoStructure = await axios.post(
-            "http://localhost:3000/api/generate-repo-structure",
+            `${process.env.BASE_URL}/api/generate-repo-structure`,
             { owner, repo }
         );
 
@@ -59,7 +59,7 @@ Do not include any explanation or extra text — just return a valid JSON array 
             array?.candidates[0]?.content.parts[0].text
         );
         const { data } = await axios.post(
-            "http://localhost:3000/api/get-repo-files",
+            `${process.env.BASE_URL}/api/get-repo-files`,
             {
                 owner,
                 repo,
@@ -78,7 +78,6 @@ Do not include any explanation or extra text — just return a valid JSON array 
 
                         return { ...file, files: filteredChildren };
                     } else {
-                        // skip excluded files (exact match or extensions)
                         if (
                             exclude.includes(file.name) ||
                             exclude.some((ext) => file.name.endsWith(ext))
