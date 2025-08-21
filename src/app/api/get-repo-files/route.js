@@ -33,7 +33,7 @@ const fetchData = async (owner, repo, path) => {
                 name: data.name,
                 type: "file",
                 path: data.path,
-                content: Buffer.from(data.content, "base64").toString("utf-8"),
+                download_url: data.download_url,
                 lastModified,
             };
         }

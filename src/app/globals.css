@@ -32,3 +32,14 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+.hljs-ln-numbers {
+    text-align: right;
+    border-right: 1px solid #444;
+    padding-right: 10px;
+    user-select: none;
+    opacity: 0.6;
+}
+
+.hljs-ln-code {
+    padding-left: 15px;
+}

@@ -3,7 +3,7 @@ import Bot from "@/components/Bot";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
-
+import hljs from "highlight.js";
 const getFileExtension = (filename) => {
     return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
 };
@@ -32,6 +32,10 @@ const Page = () => {
     const [openFiles, setOpenFiles] = useState([]);
     const [loading, setLoading] = useState("Loading");
     const tabsContainerRef = useRef(null);
+    const [code, setCode] = useState("");
+    const [loadFiles, setLoadFiles] = useState([]);
+    const [fileLoading, setFielLoading] = useState(false);
+
     useEffect(() => {
         if (openFile) {
             document.title = `${openFile.name} - ${owner}/${repo}`;
@@ -60,6 +64,39 @@ const Page = () => {
             setOpenFiles([...openFiles, newFile]);
         }
     };
+    useEffect(() => {
+        const fetchAndHighlight = async () => {
+            setFielLoading(true);
+            if (openFile?.type === "file" || openFile?.type === "other") {
+                const language = getFileExtension(openFile.name);
+                if (loadFiles[openFile.name]) {
+                    const cachedData = loadFiles[openFile.name];
+                    setCode(
+                        hljs.getLanguage(language)
+                            ? hljs.highlight(cachedData, { language }).value
+                            : hljs.highlightAuto(cachedData).value
+                    );
+                } else {
+                    const { data } = await axios.get(openFile.download_url);
+
+                    setLoadFiles((prev) => ({
+                        ...prev,
+                        [openFile.name]: data,
+                    }));
+
+                    setCode(
+                        hljs.getLanguage(language)
+                            ? hljs.highlight(data, { language }).value
+                            : hljs.highlightAuto(data).value
+                    );
+                }
+            }
+            setFielLoading(false);
+        };
+
+        fetchAndHighlight();
+    }, [openFile]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -185,10 +222,23 @@ const Page = () => {
                 </div>
             );
         }
-
+        if (fileLoading) {
+            return (
+                <div className="flex justify-center items-center h-full w-full flex-col">
+                    <div className="w-16 h-16 animate-spin border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+                    <div className="animate-pulse text-2xl">
+                        {openFile?.name} is loading ...
+                    </div>
+                </div>
+            );
+        }
         return openFile?.type === "file" || openFile?.type === "other" ? (
-            <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed p-4 bg-gray-900 rounded-lg">
-                <code>{openFile?.content}</code>
+            <pre className="whitespace-pre-wrap text-sm font-mono overflow-x-scroll leading-relaxed p-4 bg-gray-900 rounded-lg">
+                <code
+                    className={`language-${hljs.getLanguage(openFile.name)}`}
+                    dangerouslySetInnerHTML={{
+                        __html: code,
+                    }}></code>
             </pre>
         ) : openFile?.media === "image" ? (
             <div className="h-full w-full flex items-center justify-center p-4">

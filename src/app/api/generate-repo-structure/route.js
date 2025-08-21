@@ -26,7 +26,9 @@ export async function POST(request) {
         return Response.json({ success: true, message: res }, { status: 200 });
     } catch (e) {
         console.log(e);
-        return Response.json({ success: false, message: e.message }, { status: 400 });
+        return Response.json(
+            { success: false, message: e.message },
+            { status: 400 }
+        );
     }
-   
 }

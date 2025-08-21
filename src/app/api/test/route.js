@@ -2,15 +2,16 @@ import { octokit } from "@/lib/githubConfig";
 
 export async function GET() {
     try {
-        const { data } = await octokit.rest.repos.get({
+        const res= await octokit.rest.repos.getContent({
             owner: "atulj4723",
-            repo: "trackeruy",
+            repo: "Spotify",
+            //path: "index.html",
         });
 
         return Response.json(
             {
                 success: true,
-                data:data.private,
+                data: res,
             },
             { status: 200 }
         );

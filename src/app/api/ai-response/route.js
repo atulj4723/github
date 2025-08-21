@@ -11,7 +11,8 @@ export async function POST(request) {
                 `${process.env.BASE_URL}/api/get-repo-file`,
                 { params: { owner, repo, path: filePath } }
             );
-            return res.data.data;
+            const { data } = await axios.get(res.data.data.download_url);
+            return data;
         },
         getCurrentOpenFile: async () => {
             return state.openFile;
